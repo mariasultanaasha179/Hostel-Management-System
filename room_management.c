@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FILE_NAME "students.txt"
+#define FILE_NAME "students.csv"
 
-// 7. Assign Room
 void assignRoom() {
     FILE *fp = fopen(FILE_NAME, "r");
     FILE *temp = fopen("temp.txt", "w");
@@ -39,7 +38,6 @@ void assignRoom() {
     else printf("ID Not Found.\n");
 }
 
-// 8. Check Room Capacity
 void checkRoomCapacity() {
     FILE *fp = fopen(FILE_NAME, "r");
     char room[10], line[200];

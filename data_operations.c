@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FILE_NAME "students.txt"
-#define TEMP "temp.txt"
+#define FILE_NAME "students.csv"
+#define TEMP "temp.csv"
 
 // 4. Search Student
 void searchStudent() {

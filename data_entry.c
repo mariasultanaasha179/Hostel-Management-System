@@ -1,6 +1,6 @@
 #include "hostel.h"
-#define FILE_NAME "students.txt"
-#define USER_FILE "users.txt"
+#define FILE_NAME "students.csv"
+#define USER_FILE "users.csv"
 
 void userRegistration() {
     User newUser;
