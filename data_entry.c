@@ -1,24 +1,60 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include "hostel.h"
 #define FILE_NAME "students.txt"
+#define USER_FILE "users.txt"
 
-typedef struct {
-    char name[100];
-    char id[20];
-    char phone[20];
-    char room[20];
-    char fees[20];
-} Student;
+void userRegistration() {
+    User newUser;
 
-void secureLogin() {
-    char input[20], username[20];
-    printf("Enter system UserName: ");
-    scanf("%s", username);
-    printf("Enter system password: ");
-    scanf("%s", input);
+    FILE *fp = fopen(USER_FILE, "a");
 
+    printf("\n--- User Registration ---\n");
+    printf("Enter Username: ");
+    scanf("%s", newUser.username);
+    printf("Enter Password: ");
+    scanf("%s", newUser.password);
+
+    fprintf(fp, "%s,%s\n", newUser.username, newUser.password);
+    fclose(fp);
+    printf("Registration Successful. Please Login.\n");
+}
+
+int userLogin() {
+    User inputUser, fileUser;
+    FILE *fp = fopen(USER_FILE, "r");
+    char line[100];
+    int loggedIn = 0;
+
+    if (fp == NULL) {
+        printf("Error: User database not found. Please Register first.\n");
+        return 0;
+    }
+
+    printf("\n--- System Login ---\n");
+    printf("Username: ");
+    scanf("%s", inputUser.username);
+    printf("Password: ");
+    scanf("%s", inputUser.password);
+
+    while(fgets(line, sizeof(line), fp)) {
+ 
+        if (sscanf(line, "%[^,],%s", fileUser.username, fileUser.password) == 2) {
+             if(strcmp(inputUser.username, fileUser.username) == 0 &&
+               strcmp(inputUser.password, fileUser.password) == 0) {
+                loggedIn = 1;
+                break;
+            }
+        }
+    }
+
+    fclose(fp);
+
+    if (loggedIn) {
+        printf("Login Successful. Welcome, %s!\n", inputUser.username);
+    } else {
+        printf("Invalid Username or Password.\n");
+    }
+
+    return loggedIn;
 }
 
 
@@ -40,25 +76,22 @@ void addStudent() {
     printf("Student Added Successfully.\n");
 }
 
-
-
 void viewAll() {
     FILE *fp = fopen(FILE_NAME, "r");
     char line[200];
 
-    printf("\n%-15s %-10s %-12s %-8s %-10s\n",
+    printf("\n%-25s %-10s %-12s %-8s %-10s\n",
            "Name", "ID", "Phone", "Room", "Fees");
-    printf("------------------------------------------------------\n");
+    printf("------------------------------------------------------------------\n");
 
     while(fgets(line, sizeof(line), fp)) {
         Student s;
         sscanf(line, "%[^,],%[^,],%[^,],%[^,],%s",
                s.name, s.id, s.phone, s.room, s.fees);
 
-        printf("%-15s %-10s %-12s %-8s %-10s\n",
+        printf("%-25s %-10s %-12s %-8s %-10s\n",
                s.name, s.id, s.phone, s.room, s.fees);
     }
 
     fclose(fp);
 }
-
