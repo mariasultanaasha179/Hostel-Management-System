@@ -1,10 +1,8 @@
-#include <stdio.h>
-#include <string.h>
-
+#include "hostel.h"
 #define FILE_NAME "students.txt"
 #define TEMP "temp.txt"
+#define USER_FILE "users.txt"
 
-/*9. Pay Fees*/ 
 
 void payFees() {
     FILE *fp = fopen(FILE_NAME, "r");
@@ -38,8 +36,6 @@ void payFees() {
     if(found) printf("Fees Updated.\n");
 }
 
-/*10. Show Defaulters*/
-
 void showDefaulters() {
     FILE *fp = fopen(FILE_NAME, "r");
     char line[200];
@@ -58,17 +54,74 @@ void showDefaulters() {
     fclose(fp);
 }
 
-/*11. Change Password*/
-
 void changePassword() {
-    char newPass[20];
+    char currentUsername[50], oldPass[50], newPass[50];
+    User fileUser;
+    char line[100];
+    int found = 0;
 
+    printf("Enter your Username: ");
+    scanf("%s", currentUsername);
+    printf("Enter Current Password: ");
+    scanf("%s", oldPass);
     printf("Enter New Password: ");
     scanf("%s", newPass);
 
-    FILE *fp = fopen("password.txt", "w");
-    fprintf(fp, "%s", newPass);
-    fclose(fp);
+    FILE *fp = fopen(USER_FILE, "r");
+    FILE *temp = fopen(TEMP, "w");
 
-    printf("Password Changed Successfully.\n");
+    if (fp == NULL) {
+        printf("Error: User database not found. Cannot change password.\n");
+        return;
+    }
+    
+    if (temp == NULL) {
+        fclose(fp);
+        printf("Error creating temporary file.\n");
+        return;
+    }
+
+    while(fgets(line, sizeof(line), fp)) {
+        char temp_line[100];
+        strcpy(temp_line, line);
+
+        temp_line[strcspn(temp_line, "\n")] = 0;
+
+        char *token = strtok(temp_line, ",");
+        if (token != NULL) {
+            strcpy(fileUser.username, token);
+            token = strtok(NULL, ",");
+            if (token != NULL) {
+                strcpy(fileUser.password, token);
+            } else {
+
+                fprintf(temp, "%s", line);
+                continue;
+            }
+        } else {
+            fprintf(temp, "%s", line);
+            continue;
+        }
+
+        if(strcmp(currentUsername, fileUser.username) == 0 &&
+           strcmp(oldPass, fileUser.password) == 0) {
+            
+            fprintf(temp, "%s,%s\n", currentUsername, newPass);
+            found = 1;
+        } else {
+             fprintf(temp, "%s,%s\n", fileUser.username, fileUser.password);
+        }
+    }
+
+    fclose(fp);
+    fclose(temp);
+    
+    remove(USER_FILE);
+    rename(TEMP, USER_FILE);
+
+    if(found) {
+        printf("Password Changed Successfully for user %s.\n", currentUsername);
+    } else {
+        printf("Error: Username or Current Password incorrect.\n");
+    }
 }
